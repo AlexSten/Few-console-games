@@ -62,8 +62,22 @@ void SnakeLogic::InitializeSetOfElement()
 
 void SnakeLogic::SetGameField()
 {
-	for (auto numberOfCell = 0u; numberOfCell < m_gameFieldSize; ++numberOfCell)
-		(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+	bool flagNewLine = false;
+	if (m_cellsInRow % 2 != 0)
+		for (auto numberOfCell = 0u; numberOfCell < m_gameFieldSize; ++numberOfCell)
+			(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+	else
+	{
+		for (auto numberOfCell = 0u; numberOfCell < m_gameFieldSize; ++numberOfCell)
+		{
+			if (numberOfCell%m_cellsInRow == 0)
+				flagNewLine = !flagNewLine;
+			if (flagNewLine)
+				(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+			else
+				(numberOfCell % 2 != 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+		}
+	}	
 }
 
 void SnakeLogic::LightActiveCell()
@@ -82,7 +96,15 @@ void SnakeLogic::InitializeFieldSizes()
 void SnakeLogic::SetDefaultColorForCell(std::pair<size_t, size_t> _cell)
 {
 	size_t numberOfCell = _cell.first + _cell.second*m_cellsInRow;
-	(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+	if(m_cellsInRow % 2 != 0)
+		(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+	else
+	{
+		if (_cell.second % 2 == 0)
+			(numberOfCell % 2 == 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+		else
+			(numberOfCell % 2 != 0) ? (m_pCGC->m_GameField[numberOfCell] = White) : (m_pCGC->m_GameField[numberOfCell] = Grey);
+	}
 }
 
 void SnakeLogic::GenerateSnake()
